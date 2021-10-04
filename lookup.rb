@@ -22,15 +22,20 @@ dns_raw = File.readlines("zone")
 def parse_dns(dns_raw)
   dns_raw = dns_raw.map(&:strip).delete_if {|text| text.length == 0 }
   dns_raw=dns_raw[1..-1]
-  data=Array.new(5){Array.new(3)}
-  rows=[]
   no_of_rec=5
   no_of_cols=3
+  data=Array.new(no_of_rec){Array.new(no_of_cols)}
+  rows=[]
+  
      for rind in 0...no_of_rec
          all_r=dns_raw[rind].strip.split(",")
-         for cind in 0...no_of_cols
-             data[rind][cind]=all_r[cind].strip
+         
+          ctr=0
+          while ctr < no_of_cols
+            data[rind][ctr]=all_r[ctr].strip
+            ctr=ctr+1
           end
+
      end
      
   # Hash[data.map {|key,k,t| [k,{:type=>key,:target=>t}]}]
