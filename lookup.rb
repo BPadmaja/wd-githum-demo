@@ -39,19 +39,19 @@ def parse_dns(dns_raw)
      end
      
   # Hash[data.map {|key,k,t| [k,{:type=>key,:target=>t}]}]
-    Hash[data.map {|key,dname,ip_addr| [dname,{:type=>key,:target=>ip_addr}]}]
+    Hash[data.map {|key,v1,v2| [v1,{:type=>key,:target=>v2}]}]
 end
 
 def resolve(dns_records, lookup_chain, domain)
-    record = dns_records[domain]
-    if (!record)
+    name_row = dns_records[domain]
+    if (!name_row)
       lookup_chain=["Error: Record not found for #{domain}"]
       return lookup_chain
-    elsif record[:type] == "CNAME"
+    elsif name_row[:type] == "CNAME"
       lookup_chain.push(record[:target])
-      resolve(dns_records,lookup_chain,record[:target])
-    elsif record[:type] == "A"
-      lookup_chain.push(record[:target])
+      resolve(dns_records,lookup_chain,name_row[:target])
+    elsif name_row[:type] == "A"
+      lookup_chain.push(name_row[:target])
       return lookup_chain
     end
 end
