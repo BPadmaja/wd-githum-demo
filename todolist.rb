@@ -1,40 +1,33 @@
 require "date"
 
 class Todo
-  def initialize(msg, due_date, status)
-    @text = msg
+  # ..
+  # ..
+  # FILL YOUR CODE HERE
+  # ..
+  # ..
+  def initialize(text, due_date, completed)
+    @text = text
     @due_date = due_date
-    @completed = status
+    @completed = completed
   end
 
-  def is_due_today?
+  def overdue?
+    @due_date < Date.today
+  end
+
+  def due_today?
     @due_date == Date.today
   end
 
-  def is_overdue?
-    ovd_status=@due_date < Date.today
-    return ovd_status
-  end
-
-  def is_due_later?
-    late_status=@due_date > Date.today
-    return late_status
+  def due_later?
+    @due_date > Date.today
   end
 
   def to_displayable_string
-    if (@completed)
-      @status_mark = "X"
-    else
-      @status_mark = " "
-    end
-    if (is_due_today?)
-      @show_date = " "
-    else
-      @show_date = @due_date
-    end
-
-    return "[#{@status_mark}] #{@text} #{@show_date}"
-     
+    display_status = @completed ? "[X]" : "[ ]"
+    display_date = due_today? ? "" : @due_date.to_s
+    "#{display_status} #{@text} #{display_date}"
   end
 end
 
@@ -43,26 +36,30 @@ class TodosList
     @todos = todos
   end
 
-  def add(record)
-    @todos.push(record)
+  def add(todo)
+    @todos.push(todo)
   end
 
   def overdue
-    TodosList.new(@todos.filter { |todo| todo.is_overdue? })
+    TodosList.new(@todos.filter { |todo| todo.overdue? })
   end
 
   def due_today
-    TodosList.new(@todos.filter { |todo| todo.is_due_today? })
+    TodosList.new(@todos.filter { |todo| todo.due_today? })
   end
 
   def due_later
-    TodosList.new(@todos.filter { |todo| todo.is_due_later? })
+    TodosList.new(@todos.filter { |todo| todo.due_later? })
   end
 
   def to_displayable_list
     @todos.map { |todo| puts todo.to_displayable_string }.join("\n")
   end
 end
+
+# ####################################### #
+# DO NOT CHANGE ANYTHING BELOW THIS LINE. #
+# ####################################### #
 
 date = Date.today
 todos = [
@@ -78,7 +75,7 @@ todos = todos.map { |todo|
 
 todos_list = TodosList.new(todos)
 
-todos_list.add(Todo.new("Service Your vehicle", date, false))
+todos_list.add(Todo.new("Service vehicle", date, false))
 
 puts "My Todo-list\n\n"
 
@@ -93,6 +90,3 @@ puts "\n\n"
 puts "Due Later\n"
 puts todos_list.due_later.to_displayable_list
 puts "\n\n"
-
-
-
